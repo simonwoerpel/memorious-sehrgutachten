@@ -21,7 +21,7 @@ Visit a public instance here: https://aleph.ninja/sehrgutachten
 
 ### make changes
 
-All the magic happens in `src/sehrgutachten.py`
+All the magic happens in `src/sehrgutachten.py` and `config/sehrgutachten.yml`
 
 ### deployment
 
