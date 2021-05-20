@@ -17,15 +17,15 @@ pipeline:
       pass: store
 
   store:
-    method: alephclient.memorious:aleph_emit
-    params:
-      collection: sehrgutachten
-    handle:
-      pass: enrich
+    # method: alephclient.memorious:aleph_emit
+    # params:
+    #   collection: sehrgutachten
+    # handle:
+    #   pass: enrich
     # for local developement w/o a running aleph instance, just store files on disk:
-    # method: directory
-    #   params:
-    #     path: data
+    method: directory
+    params:
+      path: data
 
-  enrich:
-    method: sehrgutachten:enrich
+#   enrich:
+#     method: sehrgutachten:enrich

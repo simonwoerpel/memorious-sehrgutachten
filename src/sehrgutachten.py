@@ -1,6 +1,5 @@
 # https://github.com/okfde/sehrgutachten/blob/master/app/scrapers/wd_ausarbeitungen_scraper.rb
 
-import os
 import re
 
 from urllib.parse import urljoin, urlparse
@@ -8,18 +7,8 @@ from datetime import datetime
 
 from alephclient.api import AlephAPI
 from followthemoney import model
-from memorious.core import manager
 from memorious.helpers import make_id
 from normality import normalize
-
-
-# init memorious config
-# FIXME - this should happen somehow different
-# when figured out how to properly "package" crawlers...
-def init_memorious():
-    file_path = os.path.dirname(__file__)
-    config_path = os.path.join(file_path, '..', 'config')
-    manager.load_path(config_path)
 
 
 DEFAULT_URL = 'https://www.bundestag.de/ajax/filterlist/de/dokumente/ausarbeitungen/474644-474644/'

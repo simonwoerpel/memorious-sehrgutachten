@@ -17,11 +17,11 @@ Visit a public instance here: https://aleph.ninja/sehrgutachten
 
 ### run the crawler
 
-    memorious run sehrgutachten
+    MEMORIOUS_CONFIG_PATH=src memorious run sehrgutachten
 
 ### make changes
 
-All the magic happens in `src/sehrgutachten.py` and `config/sehrgutachten.yml`
+All the magic happens in `src/sehrgutachten.py` and `src/sehrgutachten.yml`
 
 ### deployment
 
