@@ -1,5 +1,6 @@
 # https://github.com/okfde/sehrgutachten/blob/master/app/scrapers/wd_ausarbeitungen_scraper.rb
 
+import os
 import re
 
 from urllib.parse import urljoin, urlparse
@@ -101,11 +102,13 @@ def init(context, data):
 
         try:
             title = _xp(row, ".//div[@class='bt-documents-description']/p/strong")
+            file_name = url.split('/')[-1]
+            _, ext = os.path.splitext(file_name)
             data = {
                 'url': url,
                 'key': key,
                 'title': title,
-                'file_name': title or url.split('/')[-1],
+                'file_name': title + ext if title else file_name,
                 'published_at': _clean_date(_xp(row, './td[@data-th="Veröffentlichung"]/p')),
                 'keywords': _xp(row, './td[@data-th="Thema"]/p'),
                 'category': _xp(row, './td[@data-th="Dokumenttyp"]/p'),
