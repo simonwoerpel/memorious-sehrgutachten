@@ -1,31 +1,32 @@
 name: sehrgutachten
 description: 'Ausarbeitungen der Wissenschaftlichen Dienste des Bundestags'
 
-schedule: weekly
 pipeline:
 
   init:
-    method: sehrgutachten:init
+    method: seed
     params:
-      url: https://www.bundestag.de/ajax/filterlist/de/dokumente/ausarbeitungen/474644-474644/
+      url: https://www.bundestag.de/ajax/filterlist/de/dokumente/ausarbeitungen/474644-474644/?limit=10
     handle:
       pass: fetch
 
   fetch:
     method: fetch
     handle:
+      pass: parse
+
+  parse:
+    method: sehrgutachten:parse
+    handle:
+      fetch: fetch
+      download: download
+
+  download:
+    method: fetch
+    handle:
       pass: store
 
   store:
-    # method: alephclient.memorious:aleph_emit
-    # params:
-    #   collection: sehrgutachten
-    # handle:
-    #   pass: enrich
-    # for local developement w/o a running aleph instance, just store files on disk:
     method: directory
     params:
       path: data
-
-#   enrich:
-#     method: sehrgutachten:enrich
