@@ -73,11 +73,12 @@ def seed(context, data):
     url = context.params.pop("url")
     fu = furl(url)
     for key, value in ensure_dict(context.params).items():
-        if key in ("startdate", "enddate"):
-            # convert date to timestamp
-            value = ensure_date(value)
-            value = int(time.mktime(value.timetuple()) * 1000)
-        fu.args[key] = value
+        if value:
+            if key in ("startdate", "enddate"):
+                # convert date to timestamp
+                value = ensure_date(value)
+                value = int(time.mktime(value.timetuple()) * 1000)
+            fu.args[key] = value
 
     context.emit(data={"url": fu.url})
 
@@ -104,12 +105,7 @@ def parse(context, data):
                 ),
                 "keywords": _xp(row, './td[@data-th="Thema"]/p'),
                 "category": _xp(row, './td[@data-th="Dokumenttyp"]/p'),
-                "source_url": url,
-                "publisher": {
-                    "id": "wd",
-                    "name": "Wissenschaftliche Dienste des Deutschen Bundestages",
-                    "url": "https://www.bundestag.de/ausarbeitungen/",
-                },
+                "publisher": context.crawler.config["publisher"],
             }
 
             wd_match = re.match(
@@ -122,11 +118,13 @@ def parse(context, data):
                 wd_id = wd_match.group("wd").lower() + wd_match.group("wd_id")
                 wd_id_nice = f"{wd_match.group('wd')} {wd_match.group('wd_id')}"
                 wd_name = WD_NAMES.get(wd_id, wd_id_nice)
-                detail_data["publisher"] = {
-                    "id": wd_id,
-                    "name": f"{wd_id_nice}: {wd_name}",
-                    "url": f"https://www.bundestag.de/dokumente/analysen/{wd_id}",
-                }
+                detail_data["publisher"].update(
+                    {
+                        "id": wd_id,
+                        "name": f"{wd_id_nice}: {wd_name}",
+                        "url": f"https://www.bundestag.de/dokumente/analysen/{wd_id}",
+                    }
+                )
                 detail_data["foreign_id"] = "-".join((wd_id, wd_match.group("doc_id")))
 
             context.emit("download", data=detail_data)

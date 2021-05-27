@@ -1,6 +1,15 @@
 name: sehrgutachten
 description: 'Ausarbeitungen der Wissenschaftlichen Dienste des Bundestags'
 
+publisher:
+  type: parliament-other
+  id: wd
+  name: Wissenschaftliche Dienste des Deutschen Bundestages
+  url: https://www.bundestag.de/ausarbeitungen/
+  jurisdiction:
+    id: de
+    name: Deutschland
+
 pipeline:
 
   init:
@@ -34,4 +43,4 @@ pipeline:
   store:
     method: directory
     params:
-      path: data_incremental
+      path: data

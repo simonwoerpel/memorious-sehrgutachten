@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="memorious-sehrgutachten",
-    version="0.4",
+    version="0.4.1",
     classifiers=[],
     keywords="",
     packages=find_packages("src"),
