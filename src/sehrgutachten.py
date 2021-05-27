@@ -1,10 +1,12 @@
 # https://github.com/okfde/sehrgutachten/blob/master/app/scrapers/wd_ausarbeitungen_scraper.rb
 
-import os
 import re
-from datetime import datetime
+import time
+from datetime import date, datetime
 from urllib.parse import urljoin
 
+from banal import ensure_dict
+from dateutil.parser import parse as dateparse
 from furl import furl
 
 MONTHS = (
@@ -55,6 +57,31 @@ def _clean_date(value):
             return datetime.strptime(value, "%d.%m.%Y").date().isoformat()
 
 
+def ensure_date(value, **parsekwargs):
+    if isinstance(value, date):
+        return value
+    if isinstance(value, str):
+        value = dateparse(value, **parsekwargs)
+    if isinstance(value, datetime):
+        return value.date()
+
+
+def seed(context, data):
+    """
+    an extended seed with passing in get parameter to the url
+    """
+    url = context.params.pop("url")
+    fu = furl(url)
+    for key, value in ensure_dict(context.params).items():
+        if key in ("startdate", "enddate"):
+            # convert date to timestamp
+            value = ensure_date(value)
+            value = int(time.mktime(value.timetuple()) * 1000)
+        fu.args[key] = value
+
+    context.emit(data={"url": fu.url})
+
+
 def parse(context, data):
     res = context.http.rehash(data)
 
@@ -69,20 +96,20 @@ def parse(context, data):
 
         try:
             title = _xp(row, ".//div[@class='bt-documents-description']/p/strong")
-            file_name = url.split("/")[-1]
-            _, ext = os.path.splitext(file_name)
             detail_data = {
                 "url": url,
                 "title": title,
-                "file_name": title + ext if title else file_name,
                 "published_at": _clean_date(
                     _xp(row, './td[@data-th="Veröffentlichung"]/p')
                 ),
                 "keywords": _xp(row, './td[@data-th="Thema"]/p'),
                 "category": _xp(row, './td[@data-th="Dokumenttyp"]/p'),
                 "source_url": url,
-                "publisher": "Wissenschaftliche Dienste des Deutschen Bundestages",
-                "publisher_url": "https://www.bundestag.de/ausarbeitungen/",
+                "publisher": {
+                    "id": "wd",
+                    "name": "Wissenschaftliche Dienste des Deutschen Bundestages",
+                    "url": "https://www.bundestag.de/ausarbeitungen/",
+                },
             }
 
             wd_match = re.match(
@@ -95,12 +122,11 @@ def parse(context, data):
                 wd_id = wd_match.group("wd").lower() + wd_match.group("wd_id")
                 wd_id_nice = f"{wd_match.group('wd')} {wd_match.group('wd_id')}"
                 wd_name = WD_NAMES.get(wd_id, wd_id_nice)
-                detail_data[
-                    "publisher"
-                ] = f'Wissenschaftlicher Dienst "{wd_id_nice}: {wd_name}" des Deutschen Bundestages'  # noqa
-                detail_data[
-                    "publisher_url"
-                ] = f"https://www.bundestag.de/dokumente/analysen/{wd_id}"
+                detail_data["publisher"] = {
+                    "id": wd_id,
+                    "name": f"{wd_id_nice}: {wd_name}",
+                    "url": f"https://www.bundestag.de/dokumente/analysen/{wd_id}",
+                }
                 detail_data["foreign_id"] = "-".join((wd_id, wd_match.group("doc_id")))
 
             context.emit("download", data=detail_data)

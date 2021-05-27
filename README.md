@@ -7,24 +7,31 @@ extension to download documents from the
 Other than the name suggests, it's not technical based on
 https://sehrgutachten.de but scrapes the website of the bundestag directly.
 
-Visit a public instance here: https://aleph.ninja/sehrgutachten
+It downloads the files and metadata into a local folder.
 
-## local development
+## usage
+
+The `startdate` and `enddate` parameters need to be set via env vars:
+
+    STARTDATE=2021-05-01 ENDDATE=`date '+%Y-%m-%d'` memorious run sehrgutachten
+
+if running locally, make sure the memorious config env is set as well:
+
+    MEMORIOUS_CONFIG_PATH=src
+
+## local installation / developement
 
     git clone https://github.com/simonwoerpel/memorious-sehrgutachten.git
     cd memorious-sehrgutachten
     pip install -e .
 
-### run the crawler
-
-    MEMORIOUS_CONFIG_PATH=src memorious run sehrgutachten
-
 ### make changes
 
 All the magic happens in `src/sehrgutachten.py` and `src/sehrgutachten.yml`
 
-### deployment
+## production use / deployment
+
+To use the scraper for a production basis, a proper redis and psql should be used.
 
 Please refer to the official documentation of
-[memorious](https://memorious.readthedocs.io/en/latest/) and
-[aleph](https://alephdata.org) on how to setup the infrastructure...
+[memorious](https://memorious.readthedocs.io/en/latest/)

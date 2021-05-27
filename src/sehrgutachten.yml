@@ -4,9 +4,14 @@ description: 'Ausarbeitungen der Wissenschaftlichen Dienste des Bundestags'
 pipeline:
 
   init:
-    method: seed
+    method: sehrgutachten:seed
     params:
-      url: https://www.bundestag.de/ajax/filterlist/de/dokumente/ausarbeitungen/474644-474644/?limit=10
+      url: https://www.bundestag.de/ajax/filterlist/de/dokumente/ausarbeitungen/474644-474644
+      limit: 10
+      startdate: !ENV ${STARTDATE}
+      startfield: date
+      enddate: !ENV ${ENDDATE}
+      endfield: date
     handle:
       pass: fetch
 
@@ -29,4 +34,4 @@ pipeline:
   store:
     method: directory
     params:
-      path: data
+      path: data_incremental
