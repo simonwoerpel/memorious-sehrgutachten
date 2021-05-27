@@ -34,4 +34,4 @@ All the magic happens in `src/sehrgutachten.py` and `src/sehrgutachten.yml`
 To use the scraper for a production basis, a proper redis and psql should be used.
 
 Please refer to the official documentation of
-[memorious](https://memorious.readthedocs.io/en/latest/)
+[memorious](https://memorious.readthedocs.io/en/latest/installation.html#installation-running-your-own-crawlers)
