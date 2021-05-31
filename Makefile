@@ -4,7 +4,7 @@ export MMMETA=data/sehrgutachten
 all: install mmmeta.pull run mmmeta.generate mmmeta.push
 
 run:
-	memorious run sehrgutachten
+	memorious run sehrgutachten --threads=2
 
 mmmeta.pull:
 	aws s3 sync --exclude "*db-shm" --exclude "*db-wal" s3://dokukratie-dev/sehrgutachten/_mmmeta data/sehrgutachten/_mmmeta
