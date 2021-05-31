@@ -37,6 +37,8 @@ jobs:
           MEMORIOUS_DATASTORE_URI: ${{ secrets.MEMORIOUS_DATASTORE_URI }}
           STARTDATE: ${{ github.event.inputs.start_date }}
           ENDDATE: ${{ github.event.inputs.end_date }}
+          ARCHIVE_TYPE: ${{ secrets.ARCHIVE_TYPE }}
+          ARCHIVE_BUCKET: ${{ secrets.ARCHIVE_BUCKET }}
         run: make run
       - name: Update metadata
         run: make mmmeta.generate
