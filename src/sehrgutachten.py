@@ -91,13 +91,12 @@ def seed(context, data):
         if "startdate" not in fu.args and "enddate" not in fu.args:
             m = mmmeta(os.environ["MMMETA"])
             last_enddate = m.store["memorious_last_enddate"]
-            today = datetime.now().date()
             if last_enddate:
                 fu.args["startdate"] = to_timestamp(last_enddate)
-                fu.args["enddate"] = to_timestamp(today)
+                fu.args["enddate"] = to_timestamp(datetime.now().date())
 
         # set for next run
-        m.store["memorious_last_enddate"] = today
+        m.store["memorious_last_enddate"] = datetime.now().date()
 
     context.emit(data={"url": fu.url})
 
