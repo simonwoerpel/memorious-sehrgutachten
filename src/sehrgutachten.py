@@ -75,6 +75,11 @@ def to_timestamp(value):
         return int(time.mktime(value.timetuple()) * 1000)
 
 
+def from_timestamp(value):
+    # convert to date from ajax timestamp
+    return datetime.fromtimestamp(value / 1000).date()
+
+
 def seed(context, data):
     """
     an extended seed with passing in get parameter to the url
@@ -88,15 +93,16 @@ def seed(context, data):
             fu.args[key] = value
 
     if os.environ.get("MMMETA", None) is not None:
+        m = mmmeta(os.environ["MMMETA"])
         if "startdate" not in fu.args and "enddate" not in fu.args:
-            m = mmmeta(os.environ["MMMETA"])
             last_enddate = m.store["memorious_last_enddate"]
             if last_enddate:
                 fu.args["startdate"] = to_timestamp(last_enddate)
                 fu.args["enddate"] = to_timestamp(datetime.now().date())
 
         # set for next run
-        m.store["memorious_last_enddate"] = datetime.now().date()
+        if "enddate" in fu.args:
+            m.store["memorious_last_enddate"] = from_timestamp(fu.args["enddate"])
 
     context.emit(data={"url": fu.url})
 
