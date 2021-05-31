@@ -36,7 +36,7 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo apt-get install -y -qq libicu-dev
-          pip install --no-cache-dir -q pyicu
+          pip install --no-cache-dir -q pyicu awscli
           make install
       - name: Pull metadata
         env:
