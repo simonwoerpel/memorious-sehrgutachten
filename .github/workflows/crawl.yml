@@ -14,6 +14,7 @@ jobs:
   crawl:
     environment: crawl
     runs-on: ubuntu-latest
+    container: alephdata/memorious:latest
     services:
       redis:
         image: redis:alpine
