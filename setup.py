@@ -13,7 +13,7 @@ setup(
     install_requires=[
         # "memorious",
         "memorious @ git+https://github.com/simonwoerpel/memorious@feature/env-vars-yaml",  # noqa
-        "mmmeta==0.1.1",
+        "mmmeta",
         "psycopg2",
         "furl",
     ],

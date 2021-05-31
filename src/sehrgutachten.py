@@ -68,6 +68,13 @@ def ensure_date(value, **parsekwargs):
         return value.date()
 
 
+def to_timestamp(value):
+    # convert date to timestamp used in ajax request
+    value = ensure_date(value)
+    if value:
+        return int(time.mktime(value.timetuple()) * 1000)
+
+
 def seed(context, data):
     """
     an extended seed with passing in get parameter to the url
@@ -77,22 +84,20 @@ def seed(context, data):
     for key, value in ensure_dict(context.params).items():
         if value:
             if key in ("startdate", "enddate"):
-                # convert date to timestamp
-                value = ensure_date(value)
-                value = int(time.mktime(value.timetuple()) * 1000)
+                value = to_timestamp(value)
             fu.args[key] = value
 
     if os.environ.get("MMMETA", None) is not None:
         if "startdate" not in fu.args and "enddate" not in fu.args:
             m = mmmeta(os.environ["MMMETA"])
             last_enddate = m.store["memorious_last_enddate"]
-            today = datetime.now().date().isoformat()
+            today = datetime.now().date()
             if last_enddate:
-                fu.args["startdate"] = last_enddate.date().isoformat()
-                fu.args["enddate"] = today
+                fu.args["startdate"] = to_timestamp(last_enddate)
+                fu.args["enddate"] = to_timestamp(today)
 
         # set for next run
-        m.store["memorious_last_enddate"] = fu.args["enddate"]
+        m.store["memorious_last_enddate"] = today
 
     context.emit(data={"url": fu.url})
 
