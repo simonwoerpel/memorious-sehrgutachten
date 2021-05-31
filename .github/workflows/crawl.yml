@@ -7,6 +7,8 @@ on:
         description: 'Start date'
       end_date:
         description: 'End date'
+  schedule:
+    - cron: "0 3 * * *"
 
 jobs:
   crawl:
