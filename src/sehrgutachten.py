@@ -1,5 +1,6 @@
 # https://github.com/okfde/sehrgutachten/blob/master/app/scrapers/wd_ausarbeitungen_scraper.rb
 
+import os
 import re
 import time
 from datetime import date, datetime
@@ -8,6 +9,7 @@ from urllib.parse import urljoin
 from banal import ensure_dict
 from dateutil.parser import parse as dateparse
 from furl import furl
+from mmmeta import mmmeta
 
 MONTHS = (
     "januar",
@@ -79,6 +81,18 @@ def seed(context, data):
                 value = ensure_date(value)
                 value = int(time.mktime(value.timetuple()) * 1000)
             fu.args[key] = value
+
+    if os.environ.get("MMMETA", None) is not None:
+        if "startdate" not in fu.args and "enddate" not in fu.args:
+            m = mmmeta(os.environ["MMMETA"])
+            last_enddate = m.store["memorious_last_enddate"]
+            today = datetime.now().date().isoformat()
+            if last_enddate:
+                fu.args["startdate"] = last_enddate.date().isoformat()
+                fu.args["enddate"] = today
+
+        # set for next run
+        m.store["memorious_last_enddate"] = fu.args["enddate"]
 
     context.emit(data={"url": fu.url})
 
