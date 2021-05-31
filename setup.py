@@ -14,6 +14,7 @@ setup(
         # "memorious",
         "memorious @ git+https://github.com/simonwoerpel/memorious@feature/env-vars-yaml",  # noqa
         "mmmeta==0.1.1",
+        "psycopg2",
         "furl",
     ],
 )
