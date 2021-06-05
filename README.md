@@ -1,3 +1,7 @@
+# ARCHIVED
+
+this scraper has been included into https://github.com/okfde/dokukratie/ and is maintained there
+
 # memorious-sehrgutachten
 
 A simple [memorious](https://memorious.readthedocs.io/en/latest/)
